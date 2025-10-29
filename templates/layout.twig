@@ -1,0 +1,30 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TicketApp — Twig</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  <div id="toast"></div>
+
+  <div class="site">
+    <header class="header container">
+      <h1>🎟️ TicketApp</h1>
+      <nav class="nav">
+        <a href="/?page=login" class="btn ghost">Sign in</a>
+        <a href="/?page=signup" class="btn primary">Get started</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">© {{ year }} TicketApp.</footer>
+  </div>
+
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>

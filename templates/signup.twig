@@ -1,0 +1,36 @@
+﻿{% extends "layout.twig" %}
+{% block content %}
+<h2 class="page-title">Create account</h2>
+<form id="signupForm" class="form" novalidate>
+  <div class="form-row">
+    <input class="input" type="text" name="name" placeholder="Full name" required />
+  </div>
+  <div class="form-row">
+    <input class="input" type="email" name="email" placeholder="Email" required />
+  </div>
+  <div class="form-row">
+    <input class="input" type="password" name="password" placeholder="Password" required />
+  </div>
+  <button type="submit" class="btn primary w-180">Sign up</button>
+</form>
+<p class="muted center">Already have an account? <a href="/?page=login">Login</a></p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const f = document.getElementById('signupForm');
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = f.name.value.trim();
+    const email = f.email.value.trim();
+    const password = f.password.value;
+    const res = window.ticketApp.signup({name,email,password});
+    if(res.ok){
+      window.ticketApp.toast('Account created. Please log in.','success');
+      setTimeout(()=>location.href='/?page=login', 500);
+    } else {
+      window.ticketApp.toast(res.msg || 'Unable to sign up','error');
+    }
+  });
+});
+</script>
+{% endblock %}

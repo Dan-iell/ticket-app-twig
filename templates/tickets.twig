@@ -1,0 +1,85 @@
+﻿{% extends "layout.twig" %}
+{% block content %}
+<h2 class="page-title">Ticket management</h2>
+
+<div class="center" style="margin-bottom:1rem">
+  <a href="/?page=dashboard" class="btn ghost">← Back to Dashboard</a>
+</div>
+
+<form id="ticketForm" class="form" novalidate>
+  <div class="form-row">
+    <input class="input" type="text" name="title" placeholder="Title" required />
+  </div>
+  <div class="form-row">
+    <select class="input" name="status" required>
+      <option value="open">open</option>
+      <option value="in_progress">in_progress</option>
+      <option value="closed">closed</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <textarea class="input textarea" name="description" placeholder="Description (optional)"></textarea>
+  </div>
+  <button type="submit" class="btn primary w-200">Add ticket</button>
+</form>
+
+<div id="ticketsList" class="tickets"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  window.ticketApp.guard();
+
+  const list = document.getElementById('ticketsList');
+  function row(t){
+    return `
+    <div class="card">
+      <div class="row-between">
+        <h4 class="card-title">${t.title}</h4>
+        <span class="tag ${t.status}">${t.status}</span>
+      </div>
+      <p class="card-desc">${t.description||''}</p>
+      <div class="row-gap">
+        <button type="button" class="btn ghost sm" onclick="editTicket('${t.id}')">Edit</button>
+        <button type="button" class="btn danger sm" onclick="delTicket('${t.id}')">Delete</button>
+      </div>
+    </div>`;
+  }
+  function render(){
+    const arr = window.ticketApp.tickets.all();
+    list.innerHTML = arr.map(row).join('') || '<p class="muted center">No tickets yet.</p>';
+  }
+  render();
+
+  window.delTicket = function(id){
+    if(!confirm('Delete this ticket?')) return;
+    window.ticketApp.tickets.remove(id);
+    window.ticketApp.toast('Ticket deleted','success');
+    render();
+  }
+  window.editTicket = function(id){
+    const t = window.ticketApp.tickets.find(id);
+    if(!t) return;
+    const title = prompt('Title', t.title) ?? t.title;
+    const status = prompt('Status (open | in_progress | closed)', t.status) ?? t.status;
+    const description = prompt('Description', t.description||'') ?? t.description;
+    const res = window.ticketApp.tickets.update({id,title,status,description});
+    if(!res.ok){ window.ticketApp.toast(Object.values(res.errors).join(', '),'error'); return; }
+    window.ticketApp.toast('Ticket updated','success');
+    render();
+  }
+
+  const f = document.getElementById('ticketForm');
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    const title = f.title.value.trim();
+    const status = f.status.value;
+    const description = f.description.value.trim();
+    const res = window.ticketApp.tickets.create({title,status,description});
+    if(!res.ok){ window.ticketApp.toast(Object.values(res.errors).join(', '),'error'); return; }
+    f.reset();
+    window.ticketApp.toast('Ticket created','success');
+    render();
+  });
+});
+</script>
+{% endblock %}

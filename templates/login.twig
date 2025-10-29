@@ -1,0 +1,32 @@
+﻿{% extends "layout.twig" %}
+{% block content %}
+<h2 class="page-title">Login</h2>
+<form id="loginForm" class="form" novalidate>
+  <div class="form-row">
+    <input class="input" type="email" name="email" placeholder="Email" required />
+  </div>
+  <div class="form-row">
+    <input class="input" type="password" name="password" placeholder="Password" required />
+  </div>
+  <button type="submit" class="btn primary w-180">Login</button>
+</form>
+<p class="muted center">Don't have an account? <a href="/?page=signup">Sign up</a></p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const f = document.getElementById('loginForm');
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    const email = f.email.value.trim();
+    const password = f.password.value;
+    const res = window.ticketApp.login({email,password});
+    if(res.ok){
+      window.ticketApp.toast('Welcome back','success');
+      setTimeout(()=>location.href='/?page=dashboard', 400);
+    } else {
+      window.ticketApp.toast(res.msg || 'Invalid credentials','error');
+    }
+  });
+});
+</script>
+{% endblock %}

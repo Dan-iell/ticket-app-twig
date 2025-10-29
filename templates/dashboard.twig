@@ -1,0 +1,25 @@
+﻿{% extends "layout.twig" %}
+{% block content %}
+<h2 class="page-title">Dashboard</h2>
+<div id="stats" class="stats"></div>
+<div class="center mt-16">
+  <a href="/?page=tickets" class="btn primary">Manage Tickets</a>
+  <button class="btn ghost" onclick="window.ticketApp.logout()">Logout</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  window.ticketApp.guard();
+  const t = window.ticketApp.tickets.all();
+  const open = t.filter(x=>x.status==='open').length;
+  const prog = t.filter(x=>x.status==='in_progress').length;
+  const closed = t.filter(x=>x.status==='closed').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="card"><h3>${t.length}</h3><p>Total tickets</p></div>
+    <div class="card"><h3>${open}</h3><p>Open</p></div>
+    <div class="card"><h3>${prog}</h3><p>In progress</p></div>
+    <div class="card"><h3>${closed}</h3><p>Closed</p></div>
+  `;
+});
+</script>
+{% endblock %}
