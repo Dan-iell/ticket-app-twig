@@ -8,7 +8,7 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 COPY --from=vendor /app/vendor /var/www/html/vendor
 
-RUN sed -ri "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g" /etc/apache2/sites-available/000-default.conf `
+RUN sed -ri "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g" /etc/apache2/sites-available/000-default.conf && a2enmod rewrite
  && a2enmod rewrite
 
 EXPOSE 80
